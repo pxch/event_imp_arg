@@ -1,3 +1,9 @@
+# exclude pycharm file
+/.idea/
+
+# exclude data from source control by default
+/data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

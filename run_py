@@ -1,0 +1,44 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+export PYTHONPATH=$DIR/src:$PYTHONPATH
+
+# set CORPUS_ROOT based on uname and hostname, change as needed
+system_name=`uname`
+host_name=`hostname -f`
+
+# local MacBook
+if [[ $system_name = 'Darwin' ]]; then
+    CORPUS_ROOT='/Users/pengxiang/corpora/'
+
+elif [[ $system_name = 'Linux' ]]; then
+    # private server
+    if [[ $host_name = 'pengxiang-roc' ]]; then
+        CORPUS_ROOT='/home/pengxiang/workspace/corpora/'
+
+    # UTCS Condor cluster
+    elif [[ $host_name = *"cs.utexas.edu"* ]]; then
+        CORPUS_ROOT='/scratch/cluster/pxcheng/corpora/'
+
+    # TACC Maverick cluster
+    elif [[ $host_name = *"maverick.tacc.utexas.edu" ]]; then
+        CORPUS_ROOT='/work/03155/pxcheng/maverick/corpora/'
+
+    else
+        echo 'Unrecognized platform'; exit
+    fi
+else
+    echo 'Unrecognized platform'; exit
+fi
+echo "Running on $host_name, with CORPUS_ROOT = $CORPUS_ROOT"
+
+if [[ "$#" -ge 1  && ( $1 = 'cuda' || $1 = 'cuda1' ) ]]; then
+    COMMAND="CORPUS_ROOT=$CORPUS_ROOT THEANO_FLAGS='mode=FAST_RUN,device=$1,floatX=float32' /usr/bin/env python"
+    shift
+else
+    COMMAND="CORPUS_ROOT=$CORPUS_ROOT /usr/bin/env python"
+fi
+
+COMMAND="$COMMAND $*"
+
+eval $COMMAND
+
