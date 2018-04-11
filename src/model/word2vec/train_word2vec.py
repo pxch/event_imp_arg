@@ -1,9 +1,9 @@
 import argparse
 import bz2
-import logging
 import os
 
 import gensim
+
 from utils import log
 
 
@@ -18,11 +18,6 @@ class MySentences(object):
 
 
 if __name__ == '__main__':
-
-    logging.basicConfig(
-        format='%(asctime)s : %(levelname) s : : %(message)s',
-        level=logging.INFO)
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument(

@@ -59,5 +59,16 @@ class DefaultConfig(object):
     def ontonotes_root(self):
         return join(self.corpus_root, self.ontonotes_path)
 
+    @property
+    def vocab_path(self):
+        return join(self.data_path, 'vocab')
+
+    pred_vocab_list_file = 'predicate_min_100'
+    arg_vocab_list_file = 'argument_min_500'
+    ner_vocab_list_file = 'name_entity_min_500'
+    prep_vocab_list_file = 'preposition'
+
+    pred_vocab_count_file = 'predicate_min_100_count'
+
 
 cfg = DefaultConfig()

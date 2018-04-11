@@ -1,10 +1,9 @@
 import argparse
 from os import listdir
-
 from os.path import isfile, join
 
 from common.event_script import Script, ScriptCorpus
-from data.document import read_corenlp_doc
+from data.document_reader import read_corenlp_doc
 from utils import smart_file_handler
 
 if __name__ == '__main__':

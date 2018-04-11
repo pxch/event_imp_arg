@@ -1,5 +1,4 @@
 from common import document
-from core_argument import CoreArgument
 from token import Token
 from utils import check_type, consts
 
@@ -88,12 +87,6 @@ class Mention(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def get_core_argument(self, use_lemma=True):
-        word = self.head_token.get_representation(use_lemma=use_lemma)
-        pos = self.head_token.pos
-        ner = self.ner
-        return CoreArgument(word, pos, ner)
 
     def get_representation(self, use_lemma=True):
         return self.head_token.get_representation(use_lemma=use_lemma)

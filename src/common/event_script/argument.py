@@ -1,7 +1,6 @@
 import re
 
 from common import document
-from core_argument import CoreArgument
 from entity import Entity
 from token import Token
 from utils import check_type, consts, log, unescape
@@ -63,16 +62,6 @@ class Argument(Token):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def get_core_argument(self, use_lemma=True):
-        if self.has_entity():
-            log.warning(
-                'Calling Argument.get_core_argument when it is linked to '
-                'an Entity, should call Entity.get_core_argument instead')
-        word = super(Argument, self).get_representation(use_lemma=use_lemma)
-        pos = self.pos
-        ner = self.ner
-        return CoreArgument(word, pos, ner)
 
     def get_entity(self, entity_list):
         if self.has_entity():

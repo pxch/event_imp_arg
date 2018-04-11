@@ -72,10 +72,6 @@ class Entity(object):
         check_type(result, Mention)
         return result
 
-    def get_core_argument(self, use_lemma=True):
-        # TODO: should I use self.ner rather than self.rep_mention.ner?
-        return self.rep_mention.get_core_argument(use_lemma=use_lemma)
-
     def get_representation(self, use_lemma=True):
         return self.rep_mention.get_representation(use_lemma=use_lemma)
 

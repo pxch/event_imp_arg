@@ -6,7 +6,7 @@ from utils import check_type, log
 
 
 class Event(object):
-    def __init__(self, pred, subj, dobj, pobj_list):
+    def __init__(self, pred, subj, obj, pobj_list):
         # TODO: add sent_idx attribute
         check_type(pred, Predicate)
         self._pred = pred
@@ -15,9 +15,9 @@ class Event(object):
             check_type(subj, Argument)
         self._subj = subj
 
-        if dobj is not None:
-            check_type(dobj, Argument)
-        self._dobj = dobj
+        if obj is not None:
+            check_type(obj, Argument)
+        self._obj = obj
 
         if not all(prep != '' for prep, _ in pobj_list):
             log.warning('some of prepositions in pobj_list are empty')
@@ -37,8 +37,8 @@ class Event(object):
         return self._subj
 
     @property
-    def dobj(self):
-        return self._dobj
+    def obj(self):
+        return self._obj
 
     @property
     def pobj_list(self):
@@ -50,7 +50,7 @@ class Event(object):
         else:
             return self.pred == other.pred and \
                    self.subj == other.subj and \
-                   self.dobj == other.dobj and \
+                   self.obj == other.obj and \
                    all(prep == other_prep and pobj == other_pobj
                        for (prep, pobj), (other_prep, other_pobj)
                        in zip(self.pobj_list, other.pobj_list))
@@ -60,7 +60,7 @@ class Event(object):
 
     def get_all_args(self, include_arg_type=False):
         # TODO: change OBJ to DOBJ to avoid confusion
-        all_args = [('SUBJ', self.subj), ('OBJ', self.dobj)] + \
+        all_args = [('SUBJ', self.subj), ('OBJ', self.obj)] + \
                    [('PREP_' + prep, pobj) for prep, pobj in self.pobj_list]
         all_args = [arg for arg in all_args if arg[1] is not None]
         if include_arg_type:
@@ -89,7 +89,7 @@ class Event(object):
         return '{} :SUBJ: {} :OBJ: {}{}'.format(
             self.pred.to_text(),
             self.subj.to_text() if self.subj is not None else 'NONE',
-            self.dobj.to_text() if self.dobj is not None else 'NONE',
+            self.obj.to_text() if self.obj is not None else 'NONE',
             ''.join([' :POBJ: {} : {}'.format(prep, pobj.to_text())
                      for prep, pobj in self.pobj_list])
         )

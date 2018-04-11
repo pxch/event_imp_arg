@@ -90,3 +90,16 @@ corenlp_to_valid_mapping = {
     'DURATION': 'TEMP',
     'SET': 'TEMP'
 }
+
+# entity salience related constants
+salience_features = \
+    ['first_loc', 'head_count', 'num_mentions_named', 'num_mentions_nominal',
+     'num_mentions_pronominal', 'num_mentions_total']
+num_salience_features = 6
+
+
+pred_count_thres = 100000
+
+# 10 most frequent predicate from training corpus (English Wikipedia 20160901)
+stop_preds = ['have', 'include', 'use', 'make', 'play',
+              'take', 'win', 'give', 'serve', 'receive']

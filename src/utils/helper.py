@@ -1,5 +1,7 @@
 from bz2 import BZ2File
+from collections import Counter
 from gzip import GzipFile
+from itertools import dropwhile
 
 import consts
 from logger import log
@@ -52,3 +54,35 @@ def smart_file_handler(filename, mod='r'):
     else:
         f = open(filename, mod)
     return f
+
+
+def read_counter(fin):
+    counter = Counter()
+    for line in fin.readlines():
+        parts = line.strip().split('\t')
+        if len(parts) == 2:
+            word = parts[0]
+            count = int(parts[1])
+            counter[word] = count
+    return counter
+
+
+def write_counter(counter, fout):
+    for word, count in counter.most_common():
+        fout.write('{}\t{}\n'.format(word, count))
+
+
+def prune_counter(counter, thres=1):
+    for word, count in dropwhile(
+            lambda word_count: word_count[1] >= thres, counter.most_common()):
+        del counter[word]
+
+
+def read_vocab_list(vocab_list_file):
+    vocab_list = []
+    with open(vocab_list_file, 'r') as fin:
+        for line in fin.readlines():
+            line = line.strip()
+            if line:
+                vocab_list.append(line)
+    return vocab_list
