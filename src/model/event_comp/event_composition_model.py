@@ -4,8 +4,7 @@ from os.path import exists, join
 
 from event_vector_network import EventVectorNetwork
 from pair_composition_network import PairCompositionNetwork
-from model.word2vec import Word2VecModel
-from utils import check_type, consts
+from utils import Word2VecModel, check_type, consts
 
 
 class EventCompositionModel(object):

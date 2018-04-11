@@ -2,9 +2,8 @@ import abc
 
 from common.event_script import Argument
 from core_argument import CoreArgument
-from model.word2vec import Word2VecModel
 from rich_entity import RichEntity
-from utils import check_type, log
+from utils import Word2VecModel, check_type
 
 
 class BaseRichArgument(object):

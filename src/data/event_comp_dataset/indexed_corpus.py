@@ -19,11 +19,8 @@ class IndexedCorpusReader(object):
             self.from_text_fn = IndexedEventTriple.from_text
         assert isdir(corpus_dir), '{} is not a directory'.format(corpus_dir)
         self.corpus_dir = corpus_dir
-        try:
-            self.length = int(
-                open(join(corpus_dir, 'line_count'), 'r').readline().strip())
-        except:
-            raise IOError('File {}/line_count not found!'.format(corpus_dir))
+        self.length = \
+            int(open(join(corpus_dir, 'line_count'), 'r').readline().strip())
         self.filenames = sorted(
             [join(corpus_dir, f) for f in listdir(corpus_dir)
              if isfile(join(corpus_dir, f)) and not f.endswith('line_count')])

@@ -4,6 +4,8 @@ from copy import deepcopy
 import numpy as np
 from gensim.models import KeyedVectors
 
+from utils import check_type
+
 
 class Word2VecModel(object):
     def __init__(self, name, word2vec):
@@ -36,15 +38,14 @@ class Word2VecModel(object):
         return self.word2vec.vocab
 
     def get_id2word(self):
-        return [word for (id, word) in sorted(
+        return [word for (idx, word) in sorted(
             [(v.index, word) for (word, v) in self.word2vec.vocab.items()])]
 
     def get_vector_matrix(self):
         return self.word2vec.syn0
 
     def set_vector_matrix(self, vectors):
-        assert isinstance(vectors, np.ndarray), \
-            'vectors must be a {} instance'.format(get_class_name(np.ndarray))
+        check_type(vectors, np.ndarray)
         assert vectors.shape == (self.vocab_size, self.vector_size), \
             'dimension of vectors {} mismatch with ({}, {})'.format(
                 vectors.shape, self.vocab_size, self.vector_size)

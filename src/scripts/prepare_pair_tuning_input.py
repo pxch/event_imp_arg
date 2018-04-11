@@ -4,8 +4,8 @@ from os.path import isfile, join, dirname, realpath
 
 from common.event_script import ScriptCorpus
 from config import cfg
-from model.word2vec import Word2VecModel
-from rich_script import RichScript
+from data.event_comp_dataset import RichScript
+from utils import Word2VecModel
 from utils import log, read_counter, read_vocab_list, smart_file_handler
 
 if __name__ == '__main__':

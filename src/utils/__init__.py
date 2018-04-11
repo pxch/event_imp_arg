@@ -6,3 +6,4 @@ from .helper import read_vocab_list
 from .helper import smart_file_handler
 from .logger import add_file_handler, log, pb_log
 from .logger import get_console_logger, get_file_logger
+from .word2vec import Word2VecModel

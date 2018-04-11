@@ -2,10 +2,8 @@ import argparse
 import os
 
 from data.event_comp_dataset import PairTuningCorpusIterator
-from event_composition_model import EventCompositionModel
-from event_composition_trainer import EventCompositionTrainer
-from model.word2vec import Word2VecModel
-from utils import consts, log
+from model.event_comp import EventCompositionModel, EventCompositionTrainer
+from utils import Word2VecModel, consts, log
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

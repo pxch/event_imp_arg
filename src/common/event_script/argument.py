@@ -3,7 +3,7 @@ import re
 from common import document
 from entity import Entity
 from token import Token
-from utils import check_type, consts, log, unescape
+from utils import check_type, consts, unescape
 
 
 class Argument(Token):

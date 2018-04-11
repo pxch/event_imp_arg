@@ -4,11 +4,10 @@ from itertools import permutations
 
 from common.event_script import Event
 from indexed_event import IndexedEvent, IndexedEventMultiPobj
-from model.word2vec import Word2VecModel
 from rich_argument import BaseRichArgument
 from rich_entity import EntitySalience, RichEntity
 from rich_predicate import RichPredicate
-from utils import check_type
+from utils import Word2VecModel, check_type
 
 
 class RichEvent(object):

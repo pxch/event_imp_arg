@@ -1,5 +1,4 @@
-from model.word2vec import Word2VecModel
-from utils import check_type, consts
+from utils import Word2VecModel, check_type, consts
 
 
 class CoreArgument(object):
