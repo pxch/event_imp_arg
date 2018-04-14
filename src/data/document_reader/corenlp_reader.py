@@ -147,7 +147,7 @@ class CoreNLPTarget(object):
                 self.extra = False
         elif tag == 'coreference':
             if self.parse_coref:
-                if self.coref is not None:
+                if self.coref is not None and self.coref.num_mentions > 0:
                     self.corefs.append(deepcopy(self.coref))
                     self.coref = None
                 else:
