@@ -1,6 +1,6 @@
 import argparse
 from os import listdir
-from os.path import isfile, join, dirname, realpath
+from os.path import isfile, join
 
 from common.event_script import ScriptCorpus
 from config import cfg
@@ -34,8 +34,6 @@ if __name__ == '__main__':
 
     model = Word2VecModel.load_model(
         args.word2vec, fvocab=args.word2vec_vocab, binary=True)
-
-    cur_dir_path = dirname(realpath(__file__))
 
     if args.prep_vocab:
         prep_vocab_list = read_vocab_list(args.prep_vocab)

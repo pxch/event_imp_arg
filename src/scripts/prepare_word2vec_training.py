@@ -1,6 +1,6 @@
 import argparse
 from os import listdir
-from os.path import isfile, join, dirname, realpath
+from os.path import isfile, join
 
 from common.event_script import ScriptCorpus
 from config import cfg
@@ -26,8 +26,6 @@ if __name__ == '__main__':
     input_files = sorted([
         join(args.input_path, f) for f in listdir(args.input_path)
         if isfile(join(args.input_path, f)) and f.endswith('.bz2')])
-
-    cur_dir_path = dirname(realpath(__file__))
 
     if args.pred_vocab:
         pred_vocab_list = read_vocab_list(args.pred_vocab)

@@ -1,10 +1,10 @@
 import argparse
-import bz2
-import os
+from os import listdir
+from os.path import join
 
 import gensim
 
-from utils import log
+from utils import log, smart_file_handler
 
 
 class MySentences(object):
@@ -12,8 +12,8 @@ class MySentences(object):
         self.dirname = dirname
 
     def __iter__(self):
-        for fname in os.listdir(self.dirname):
-            for line in bz2.BZ2File(os.path.join(self.dirname, fname)):
+        for fname in listdir(self.dirname):
+            for line in smart_file_handler(join(self.dirname, fname), 'r'):
                 yield line.split()
 
 

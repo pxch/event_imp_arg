@@ -1,11 +1,11 @@
-from bz2 import BZ2File
 from math import ceil
 from os import listdir
-
-import numpy
 from os.path import isdir, isfile, join
 
+import numpy
+
 from indexed_event import IndexedEvent, IndexedEventTriple
+from utils import smart_file_handler
 
 
 class IndexedCorpusReader(object):
@@ -30,11 +30,7 @@ class IndexedCorpusReader(object):
 
     def __iter__(self):
         for filename in self.filenames:
-            if filename.endswith('bz2'):
-                index_file = BZ2File(filename, 'r')
-            else:
-                index_file = open(filename, 'r')
-            for line in index_file.readlines():
+            for line in smart_file_handler(filename, 'r').readlines():
                 line = line.strip()
                 if line:
                     yield self.from_text_fn(line)
