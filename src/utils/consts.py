@@ -1,3 +1,11 @@
+# identifiers for Ontonotes corpus with *.name and *.coref files
+valid_ontonotes_corpus = [
+    'english-bn-cnn',
+    'english-bn-voa',
+    'english-nw-xinhua',
+    'english-nw-wsj',
+]
+
 # valid NER tags (combined from CoreNLP and Ontonotes)
 valid_ner_tags = ['PER', 'ORG', 'LOC', 'TEMP', 'NUM']
 

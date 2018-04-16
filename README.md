@@ -19,8 +19,10 @@ export CORPUS_ROOT=~/corpora
 ```
 
 ## Dataset
-### Prepare training data
-Assume the directory to store all training data is `~/corpora/enwiki/`, and you are currently in `~/event_imp_arg`.
+By default, assume the working directory is `~/event_imp_arg`.
+
+### Prepare Training Data
+Assume the directory to store all training data is `~/corpora/enwiki/`.
 
 1. Create directories.
 ```bash
@@ -58,12 +60,12 @@ wget http://nlp.stanford.edu/software/stanford-corenlp-full-2016-10-31.zip
 unzip stanford-corenlp-full-2016-10-31.zip
 rm stanford-corenlp-full-2016-10-31.zip
 popd
-for j in ~/stanford-corenlp-full-2016-10-31/*.jar; do export CLASSPATH="$CLASSPATH:$j"; done
+for j in ~/stanford-corenlp-full-2016-10-31/*.jar; do export CORENLP_CP="$CORENLP_CP:$j"; done
 ```
 
 6. Parse each document from step 4 one line at a time (representing one paragraph), with the following parameters:
 ```bash
-java -cp $CLASSPATH -Xmx16g edu.stanford.nlp.pipeline.StanfordCoreNLP \
+java -cp $CORENLP_CP -Xmx16g edu.stanford.nlp.pipeline.StanfordCoreNLP \
 	-annotators tokenize,ssplit,pos,lemma,ner,depparse,mention,coref \
 	-coref.algorithm statistical -outputExtension .xml
 ```
@@ -119,3 +121,32 @@ python scripts/prepare_pair_tuning_input.py \
 ```
 
 __Note__: Step 7, 8, 9, 11, 12 are all described for a cluster environment where jobs can be paralleled among multiple nodes to speed up, however it can also be done on a single machine by looping through all subdirectories.
+
+### Prepare OntoNotes Evaluation Data
+
+1. Download OntoNotes Release 5.0 from https://catalog.ldc.upenn.edu/ldc2013t19, and extract the content to `~/corpora/ontonotes-release-5.0`.
+
+2. Install the OntoNotes DB Tool included in the release. Note that there might be a function naming issue you need to fix in `ontonotes-db-tool-v0.999b/src/on/common/log.py`, change `def bad_data(...)` to `def bad_data_long(...)` in line 180.
+```bash
+pushd ~/corpora/ontonotes-release-5.0/ontonotes-db-tool-v0.999b
+python setup.py install
+popd
+```
+
+3. The `nw/wsj` corpus in OntoNotes only have a fraction of documents with gold coreference annotations, we need to filter out those without annotations.
+```bash
+./filter_ontonotes_wsj.sh
+```
+
+4. Ontonotes only contains constituency parses, convert them to dependency parses using `UniversalDependenciesConverter` from Stanford CoreNLP. (Check step 5 in "Preparing Training Data" for configuring CoreNLP)
+```bash
+./convert_ontonotes_parse.sh bn/cnn
+./convert_ontonotes_parse.sh bn/voa
+./convert_ontonotes_parse.sh nw/xinhua
+./convert_ontonotes_parse.sh nw/wsj
+```
+
+5. Extract event scripts from OntoNotes documents, and build `OnShort` and `OnLong` evaluation datasets in  `data/ontonotes/`.
+```bash
+python scripts/build_ontonotes_dataset.py data/ontonotes --suppress_warning
+```

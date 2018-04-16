@@ -76,10 +76,10 @@ class Coreference(object):
                       if mention.head_token.pos.startswith('NNP')]
         # if no mentions are headed by proper nouns, select mentions containing
         # proper nouns
-        if not candidates:
-            candidates = [mention for mention in self._mentions
-                          if any(token.pos.startswith('NNP')
-                                 for token in mention.tokens)]
+        # if not candidates:
+        #     candidates = [mention for mention in self._mentions
+        #                   if any(token.pos.startswith('NNP')
+        #                          for token in mention.tokens)]
         # if no mentions are headed by proper nouns, select mentions headed
         # by common nouns
         if not candidates:
