@@ -1,10 +1,10 @@
 import argparse
 from collections import defaultdict, Counter
-from os import listdir
-from os.path import isfile, join
+from os import listdir, makedirs
+from os.path import isdir, isfile, join
 
 from common.event_script import ScriptCorpus
-from utils import log, smart_file_handler, write_counter
+from utils import log, smart_file_handler, write_vocab_count
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -37,7 +37,10 @@ if __name__ == '__main__':
                 for key in vocab_count:
                     all_vocab_count[key] += vocab_count[key]
 
+    if not isdir(args.output_path):
+        makedirs(args.output_path)
+
     for key in all_vocab_count:
         fout = smart_file_handler(join(args.output_path, key + '.bz2'), 'w')
-        write_counter(all_vocab_count[key], fout)
+        write_vocab_count(all_vocab_count[key], fout)
         fout.close()

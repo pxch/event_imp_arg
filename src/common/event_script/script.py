@@ -137,13 +137,11 @@ class Script(object):
                 vocab_count['argument'][arg_representation] += 1
                 if mention.ner != '':
                     vocab_count['name_entity'][arg_representation] += 1
-                    vocab_count['name_entity_tag'][mention.ner] += 1
             else:
                 arg_representation = arg.get_representation(use_lemma=use_lemma)
                 vocab_count['argument'][arg_representation] += 1
                 if arg.ner != '':
                     vocab_count['name_entity'][arg_representation] += 1
-                    vocab_count['name_entity_tag'][arg.ner] += 1
         return vocab_count
 
     def to_text(self):

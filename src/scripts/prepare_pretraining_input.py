@@ -6,7 +6,7 @@ from common.event_script import ScriptCorpus
 from config import cfg
 from data.event_comp_dataset import RichScript
 from utils import Word2VecModel
-from utils import log, read_counter, read_vocab_list, smart_file_handler
+from utils import log, read_vocab_count, read_vocab_list, smart_file_handler
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -45,8 +45,8 @@ if __name__ == '__main__':
 
     pred_count_dict = None
     if args.subsampling:
-        with open(join(cfg.vocab_path, cfg.pred_vocab_count_file)) as fin:
-            pred_count_dict = read_counter(fin)
+        pred_count_dict = read_vocab_count(
+            join(cfg.vocab_path, cfg.pred_vocab_count_file))
 
     for input_f in input_files:
         if args.verbose:
