@@ -1,6 +1,13 @@
 # Implict Argument Prediction with Event Knowledge
 Code for the NAACL 2018 paper: [Implicit Argument Prediction with Event Knowledge](https://arxiv.org/abs/1802.07226).
 
+## Quick Links
+* [Dependencies](#dependencies)
+* [Usage](#usage)
+* [Dataset](#dataset)
+	* [Prepare Training Data](#prepare-training-data)
+	* [Prepare OntoNotes Evaluation Data](#prepare-ontonotes-evaluation-data)
+
 ## Dependencies
 * python 2.7
 * theano >= 0.9
@@ -146,7 +153,7 @@ popd
 ./convert_ontonotes_parse.sh nw/wsj
 ```
 
-5. Extract event scripts from OntoNotes documents, and build `OnShort` and `OnLong` evaluation datasets in  `data/ontonotes/`.
+5. Extract event scripts from OntoNotes documents, and build `OnShort` and `OnLong` evaluation datasets in `data/ontonotes/`.
 ```bash
 python scripts/build_ontonotes_dataset.py data/ontonotes --suppress_warning
 ```
