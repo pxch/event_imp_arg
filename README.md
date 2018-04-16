@@ -46,7 +46,7 @@ python ~/corpora/enwiki/wikiextractor/WikiExtractor.py \
 
 4. Split each document into a separate file, with each paragraph in a single line. As the total number of documents is too large, we store them in multiple subdirectories (with 5000 documents each by default). The following commands should store all documents in `~/corpora/enwiki/extracted/documents/xxxx/`, where `xxxx` are subdirectories starting from `0000`. 
 ```bash
-python src/scripts/split_wikipedia_document.py \
+python scripts/split_wikipedia_document.py \
 	~/corpora/enwiki/extracted/AA ~/corpora/enwiki/extracted/documents \
 	--file_per_dir 5000
 ```
@@ -73,23 +73,23 @@ java -cp $CLASSPATH -Xmx16g edu.stanford.nlp.pipeline.StanfordCoreNLP \
 
 7. Generate scripts from CoreNLP parsed documents (for all subdirectories `xxxx` and `yyy`).
 ```bash
-python src/scripts/generate_event_script.py ~/corpora/enwiki/parsed/xxxx/yyy ~/corpora/enwiki/scripts/xxxx/yyy.bz2
+python scripts/generate_event_script.py ~/corpora/enwiki/parsed/xxxx/yyy ~/corpora/enwiki/scripts/xxxx/yyy.bz2
 ```
 
 8. Count all tokens in the scripts (for all subdirectories `xxxx`), and build vocabularies for predicates, arguments (including named entities), and prepositions. The vocabularies are stored in `~/event_imp_arg/data/vocab/`.
 ```bash
-python src/scripts/count_all_vocabs.py ~/corpora/enwiki/scripts/xxxx/ ~/corpora/enwiki/vocab/raw_counts/xxxx
-python src/scripts/sum_all_vocabs.py ~/corpora/enwiki/vocab/raw_counts data/vocab
+python scripts/count_all_vocabs.py ~/corpora/enwiki/scripts/xxxx/ ~/corpora/enwiki/vocab/raw_counts/xxxx
+python scripts/sum_all_vocabs.py ~/corpora/enwiki/vocab/raw_counts data/vocab
 ```
 
 9. Generate word2vec training examples (for all subdirectories `xxxx`).
 ```bash
-python src/scripts/prepare_word2vec_training.py ~/corpora/enwiki/scripts/xxxx/ ~/corpora/enwiki/word2vec/training/xxxx.bz2
+python scripts/prepare_word2vec_training.py ~/corpora/enwiki/scripts/xxxx/ ~/corpora/enwiki/word2vec/training/xxxx.bz2
 ```
 
 10. Train event-based word2vec model.
 ```bash
-python src/scripts/train_word2vec.py \
+python scripts/train_word2vec.py \
 	--train ~/corpora/enwiki/word2vec/training \
 	--output ~/corpora/enwiki/word2vec/space/enwiki.bin \
 	--save_vocab ~/corpora/enwiki/word2vec/space/enwiki.vocab \
@@ -99,7 +99,7 @@ python src/scripts/train_word2vec.py \
 
 11. [Optional] Generate autoencoder pretraining examples (for all subdirectories `xxxx`).
 ```bash
-python src/scripts/prepare_pretraining_input.py \
+python scripts/prepare_pretraining_input.py \
 	~/corpora/enwiki/scripts/xxxx/ \
 	~/corpora/enwiki/indexed/pretraining/xxxx.bz2 \
 	~/corpora/enwiki/word2vec/space/enwiki.bin \
@@ -109,7 +109,7 @@ python src/scripts/prepare_pretraining_input.py \
 
 12. Generate event composition training examples (for all subdirectories `xxxx`).
 ```bash
-python src/scripts/prepare_pair_tuning_input.py \
+python scripts/prepare_pair_tuning_input.py \
 	~/corpora/enwiki/scripts/xxxx/ \
 	~/corpora/enwiki/indexed/pair_tuning/xxxx.bz2 \
 	~/corpora/enwiki/word2vec/space/enwiki.bin \
