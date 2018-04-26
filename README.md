@@ -7,6 +7,8 @@ Code for the NAACL 2018 paper: [Implicit Argument Prediction with Event Knowledg
 * [Dataset](#dataset)
 	* [Prepare Training Data](#prepare-training-data)
 	* [Prepare OntoNotes Evaluation Data](#prepare-ontonotes-evaluation-data)
+* [Evaluation](#evaluation)
+	* [Evaluation on OntoNotes](#evaluation-on-ontonotes)
 
 ## Dependencies
 * python 2.7
@@ -157,3 +159,10 @@ popd
 ```bash
 python scripts/build_ontonotes_dataset.py data/ontonotes --suppress_warning
 ```
+
+## Evaluation
+
+### Evaluation on OntoNotes
+Follow the steps in the following Jupyter Notebooks to reproduce the evaluation results on OntoNotes.
+* [notebooks/Ontonotes Evaluation (Baselines).ipynb](notebooks/OntoNotes%20Evaluation%20(Baselines).ipynb)
+* [notebooks/Ontonotes Evaluation (Event Composition Model).ipynb](https://github.com/pxch/event_imp_arg/blob/master/notebooks/OntoNotes%20Evaluation%20(Event%20Composition%20Model).ipynb)
