@@ -1,5 +1,3 @@
-import timeit
-
 import on
 from on.common.util import FancyConfigParser
 
@@ -30,8 +28,6 @@ def load_ontonotes(corpus):
     on_cfg.set('corpus', 'data_in', cfg.ontonotes_root)
     on_cfg.set('corpus', 'load', corpus)
 
-    start_time = timeit.default_timer()
-
     # suppress stderr, as the following commands print too much useless info
     null_fd, save_fd = suppress_fd(2)
 
@@ -43,8 +39,7 @@ def load_ontonotes(corpus):
     # restore stderr
     restore_fd(2, null_fd, save_fd)
 
-    elapsed = timeit.default_timer() - start_time
-    log.info('Done in {:.3f} seconds'.format(elapsed))
+    log.info('Done')
 
     log.info('Found {} files with extensions {}'.format(
         len(corpus['document']), on_cfg.get('corpus', 'banks').split()))

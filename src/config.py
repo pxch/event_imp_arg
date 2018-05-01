@@ -41,7 +41,7 @@ class DefaultConfig(object):
     # path to Nombank corpus (relative to corpus_root)
     nombank_path = 'nombank.1.0'
     # file name of propositions in Nombank corpus
-    nombank_file = 'nombank.1.0_sorted'
+    nombank_file = 'nombank.1.0_sorted_old'
     # file name of noun list in Nombank corpus
     nombank_nouns_file = 'nombank.1.0.words'
 
@@ -59,6 +59,12 @@ class DefaultConfig(object):
     def ontonotes_root(self):
         return join(self.corpus_root, self.ontonotes_path)
 
+    model_path = 'enwiki-20160901/event_comp_training/results'
+
+    @property
+    def model_root(self):
+        return join(self.corpus_root, self.model_path)
+
     @property
     def vocab_path(self):
         return join(self.data_path, 'vocab')
@@ -70,5 +76,12 @@ class DefaultConfig(object):
 
     pred_vocab_count_file = 'predicate_min_100_count'
 
+    @property
+    def gc_path(self):
+        return join(self.data_path, 'gerber_chai')
+
+    gc_dataset_url = \
+        'http://lair.cse.msu.edu/projects/implicit_argument_annotations.zip'
+    gc_dataset_name = 'implicit_argument_annotations.xml'
 
 cfg = DefaultConfig()

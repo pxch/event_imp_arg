@@ -6,7 +6,6 @@ import requests
 
 from config import cfg
 from utils import log
-from data import gc_dataset_name, gc_dataset_url
 
 
 def download_gc_dataset(url, path):
@@ -30,13 +29,13 @@ def download_gc_dataset(url, path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', help='url of the dataset',
-                        default=gc_dataset_url)
+                        default=cfg.gc_dataset_url)
     parser.add_argument('--path', help='directory to store the downloaded file',
-                        default=cfg.raw_data_path)
+                        default=cfg.gc_path)
     args = parser.parse_args()
 
-    if not exists(join(args.path, gc_dataset_name)):
+    if not exists(join(args.path, cfg.gc_dataset_name)):
         download_gc_dataset(url=args.url, path=args.path)
     else:
         log.info('Dataset already exists: {}'.format(
-            join(args.path, gc_dataset_name)))
+            join(args.path, cfg.gc_dataset_name)))
