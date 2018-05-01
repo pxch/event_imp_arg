@@ -169,6 +169,11 @@ Follow the steps in the following Jupyter Notebooks to reproduce the evaluation 
 * [notebooks/Ontonotes Evaluation (Event Composition Model).ipynb](https://github.com/pxch/event_imp_arg/blob/master/notebooks/OntoNotes%20Evaluation%20(Event%20Composition%20Model).ipynb)
 
 ### Evaluation on G&C
+Download the dataset by
+```bash
+python scripts/download_gc_dataset.py
+```
+
 You will need to have the following corpora ready in `~/corpora/`
 * penn-treebank-rel3: https://catalog.ldc.upenn.edu/ldc99t42
 * propbank-LDC2004T14: https://catalog.ldc.upenn.edu/ldc2004t14
