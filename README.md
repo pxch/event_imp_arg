@@ -147,7 +147,7 @@ popd
 ./filter_ontonotes_wsj.sh
 ```
 
-4. Ontonotes only contains constituency parses, convert them to dependency parses using `UniversalDependenciesConverter` from Stanford CoreNLP. (Check step 5 in "Preparing Training Data" for configuring CoreNLP)
+4. Ontonotes only contains constituency parses, convert them to dependency parses using `UniversalDependenciesConverter` from Stanford CoreNLP. (Check step 5 in [Prepare Training Data](#prepare-training-data) for configuring CoreNLP)
 ```bash
 ./convert_ontonotes_parse.sh bn/cnn
 ./convert_ontonotes_parse.sh bn/voa
