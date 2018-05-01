@@ -9,6 +9,7 @@ Code for the NAACL 2018 paper: [Implicit Argument Prediction with Event Knowledg
 	* [Prepare OntoNotes Evaluation Data](#prepare-ontonotes-evaluation-data)
 * [Evaluation](#evaluation)
 	* [Evaluation on OntoNotes](#evaluation-on-ontonotes)
+	* [Evaluation on G&C](#evaluation-on-g&c)
 
 ## Dependencies
 * python 2.7
@@ -166,3 +167,14 @@ python scripts/build_ontonotes_dataset.py data/ontonotes --suppress_warning
 Follow the steps in the following Jupyter Notebooks to reproduce the evaluation results on OntoNotes.
 * [notebooks/Ontonotes Evaluation (Baselines).ipynb](notebooks/OntoNotes%20Evaluation%20(Baselines).ipynb)
 * [notebooks/Ontonotes Evaluation (Event Composition Model).ipynb](https://github.com/pxch/event_imp_arg/blob/master/notebooks/OntoNotes%20Evaluation%20(Event%20Composition%20Model).ipynb)
+
+### Evaluation on G&C
+You will need to have the following corpora ready in `~/corpora/`
+* penn-treebank-rel3: https://catalog.ldc.upenn.edu/ldc99t42
+* propbank-LDC2004T14: https://catalog.ldc.upenn.edu/ldc2004t14
+* nombank.1.0: https://catalog.ldc.upenn.edu/LDC2008T23
+
+You will also need to have a CoreNLP parsed wsj corpus. (Check step 5 and 6 in [Prepare Training Data](#prepare-training-data))
+
+Then follow the steps in the following Jupyter Notebook to reproduce the evaluation results on G&C.
+* [notebooks/G&C Evaluation.ipynb](notebooks/G&amp;C%20Evaluation.ipynb)
