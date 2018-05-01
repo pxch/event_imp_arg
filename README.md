@@ -9,7 +9,7 @@ Code for the NAACL 2018 paper: [Implicit Argument Prediction with Event Knowledg
 	* [Prepare OntoNotes Evaluation Data](#prepare-ontonotes-evaluation-data)
 * [Evaluation](#evaluation)
 	* [Evaluation on OntoNotes](#evaluation-on-ontonotes)
-	* [Evaluation on G&C](#evaluation-on-g&c)
+	* [Evaluation on G&C](#evaluation-on-gc)
 
 ## Dependencies
 * python 2.7
