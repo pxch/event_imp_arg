@@ -6,15 +6,6 @@ class DefaultConfig(object):
     # absolute path to the root of this repository (parent directory of src)
     repo_root = dirname(dirname(realpath(__file__)))
 
-    # path to the data directory
-    @property
-    def data_path(self):
-        return join(self.repo_root, 'data')
-
-    @property
-    def raw_data_path(self):
-        return join(self.repo_root, 'data/raw')
-
     # root directory for all corpora (from environment variable CORPUS_ROOT)
     corpus_root = os.environ['CORPUS_ROOT']
 
@@ -64,6 +55,11 @@ class DefaultConfig(object):
     @property
     def model_root(self):
         return join(self.corpus_root, self.model_path)
+
+    # path to the data directory
+    @property
+    def data_path(self):
+        return join(self.repo_root, 'data')
 
     @property
     def vocab_path(self):

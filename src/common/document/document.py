@@ -84,7 +84,7 @@ class Document(object):
         return result
 
     def plain_text(self):
-        return '\n'.join([sent.to_plain_text() for sent in self._sents])
+        return '\n'.join([sent.plain_text() for sent in self._sents])
 
     def preprocessing(self):
         for coref in self._corefs:
