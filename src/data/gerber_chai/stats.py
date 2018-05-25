@@ -194,3 +194,6 @@ def print_eval_stats(all_rich_predicates):
         table.add_row(row)
 
     print table.draw()
+
+    print 'total_dice = {}, total_groudtruth = {}, total_model = {}'.format(
+        total_dice, total_gt, total_model)

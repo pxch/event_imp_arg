@@ -6,7 +6,8 @@ from utils import check_type, escape, unescape
 
 
 class Predicate(Token):
-    def __init__(self, word, lemma, pos, neg=False, prt=''):
+    def __init__(self, word, lemma, pos, neg=False, prt='',
+                 sentnum=-1, wordnum=-1):
         super(Predicate, self).__init__(word, lemma, pos)
 
         # whether the predicate is negated, default is False
@@ -15,6 +16,9 @@ class Predicate(Token):
 
         # particle attached to the predicate, default is empty string
         self._prt = prt
+
+        self.sentnum = sentnum
+        self.wordnum = wordnum
 
     @property
     def neg(self):
@@ -49,7 +53,7 @@ class Predicate(Token):
             text = 'not//' + text
         if self.prt != '':
             text += '//' + escape(self.prt)
-        return text
+        return '{}-{}-{}'.format(self.sentnum, self.wordnum, text)
 
     pred_re = re.compile(
         r'^((?P<neg>not)(?://))?(?P<word>[^/]*)/(?P<lemma>[^/]*)/(?P<pos>[^/]*)'
@@ -85,4 +89,7 @@ class Predicate(Token):
         assert 'prt' in kwargs, 'prt must be provided when creating Predicate'
         prt = kwargs['prt']
 
-        return cls(word, lemma, pos, neg, prt)
+        sentnum = token.sent_idx
+        wordnum = token.token_idx
+
+        return cls(word, lemma, pos, neg, prt, sentnum=sentnum, wordnum=wordnum)

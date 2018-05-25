@@ -50,6 +50,27 @@ class Script(object):
         self._events.append(event)
         self._num_events += 1
 
+    def add_extra_event(self, extra_event):
+        check_type(extra_event, Event)
+        extra_sentnum = extra_event.pred.sentnum
+        extra_wordnum = extra_event.pred.wordnum
+
+        event_idx = 0
+        while event_idx < self._num_events:
+            sentnum = self._events[event_idx].pred.sentnum
+            wordnum = self._events[event_idx].pred.wordnum
+
+            if sentnum == extra_sentnum and wordnum == extra_wordnum:
+                return
+
+            if (sentnum == extra_sentnum and wordnum > extra_wordnum) or \
+                    sentnum > extra_sentnum:
+                break
+            event_idx += 1
+
+        self._events.insert(event_idx, extra_event)
+        self._num_events += 1
+
     def __eq__(self, other):
         if not isinstance(other, Script):
             return False

@@ -127,7 +127,8 @@ class RichPredicate(object):
 
     @classmethod
     def build(cls, predicate, corenlp_reader, use_lemma=True, use_entity=True,
-              use_corenlp_tokens=True, labeled_arg_only=False):
+              use_corenlp_tokens=True, labeled_arg_only=False,
+              avail_candidates=None):
         check_type(predicate, Predicate)
 
         exp_args = []
@@ -157,12 +158,18 @@ class RichPredicate(object):
                 if label not in predicate.exp_args:
                     missing_labels.append(label)
 
+        if avail_candidates is None:
+            candidates = predicate.candidates
+        else:
+            candidates = [candidate for candidate in predicate.candidates
+                          if str(candidate.arg_pointer) in avail_candidates]
+
         imp_args = []
         for label in missing_labels:
             fillers = predicate.imp_args.get(label, [])
             arg_type = predicate_core_arg_mapping[predicate.v_pred][label]
             imp_arg = RichImplicitArgument.build(
-                label, arg_type, fillers, predicate.candidates, corenlp_reader,
+                label, arg_type, fillers, candidates, corenlp_reader,
                 use_lemma=use_lemma, use_entity=use_entity,
                 use_corenlp_tokens=use_corenlp_tokens)
             imp_args.append(imp_arg)
@@ -170,13 +177,13 @@ class RichPredicate(object):
         candidate_core_list = [
             candidate.arg_pointer.get_core_argument(
                 corenlp_reader, use_lemma=use_lemma, use_entity=use_entity)
-            for candidate in predicate.candidates]
+            for candidate in candidates]
         candidate_salience_list = [
             candidate.arg_pointer.get_entity_salience(
                 corenlp_reader, use_entity=use_entity)
-            for candidate in predicate.candidates]
+            for candidate in candidates]
 
-        num_candidates = len(predicate.candidates)
+        num_candidates = len(candidates)
 
         return cls(
             fileid=predicate.fileid,

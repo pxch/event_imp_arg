@@ -1,22 +1,31 @@
 from collections import defaultdict
-from os.path import join
+from copy import deepcopy
 
 import numpy as np
+from nltk.corpus.reader.nombank import NombankChainTreePointer
+from nltk.corpus.reader.propbank import PropbankChainTreePointer
 from nltk.stem import WordNetLemmatizer
+from os.path import join
 from sklearn.model_selection import KFold
-from tqdm import tqdm
 
 from candidate import CandidateDict
+from common import event_script
+from config import cfg
 from corenlp_reader import CoreNLPReader
 from data.event_comp_dataset import IndexedEvent
+from data.event_comp_dataset import RichScript
 from data.nltk import NombankReader, PropbankReader, PTBReader
 from helper import compute_f1, pred_list
-from helper import expand_wsj_fileid, nominal_predicate_mapping
+from helper import convert_nombank_label
+from helper import expand_wsj_fileid, shorten_wsj_fileid
+from helper import nominal_predicate_mapping, core_arg_list
 from imp_arg_instance import ImpArgInstance
 from predicate import Predicate
 from rich_predicate import RichPredicate
+from rich_tree_pointer import RichTreePointer
 from stats import print_stats, print_eval_stats
 from utils import Word2VecModel, check_type, log
+from utils import read_vocab_list
 
 
 class ImpArgDataset(object):
@@ -237,8 +246,145 @@ class ImpArgDataset(object):
     def print_stats(self, verbose=0):
         print_stats(self.all_predicates, verbose=verbose)
 
+    def build_extra_event(self, instance, pred, sent):
+        subj = None
+        obj = None
+        pobj_list = []
+
+        fileid = shorten_wsj_fileid(instance.fileid)
+        sentnum = instance.sentnum
+
+        for tree_pointer, label in instance.arguments:
+            cvt_label = convert_nombank_label(label)
+            if cvt_label not in core_arg_list:
+                continue
+            arg_pointer_list = []
+            if isinstance(tree_pointer, NombankChainTreePointer) or \
+                    isinstance(tree_pointer, PropbankChainTreePointer):
+                for p in tree_pointer.pieces:
+                    arg_pointer_list.append(RichTreePointer(
+                        fileid, sentnum, p, tree=instance.tree))
+            else:
+                arg_pointer_list.append(RichTreePointer(
+                    fileid, sentnum, tree_pointer, tree=instance.tree))
+
+            argument_list = []
+            for arg_pointer in arg_pointer_list:
+                arg_pointer.parse_treebank()
+                arg_pointer.parse_corenlp(self.corenlp_reader,
+                                          include_non_head_entity=True)
+
+                arg_token_idx = arg_pointer.head_idx()
+                if arg_token_idx != -1 and arg_token_idx != pred.wordnum:
+                    arg_token = sent.get_token(arg_token_idx)
+                    argument = event_script.Argument.from_token(arg_token)
+                    argument_list.append(argument)
+
+            if cvt_label == 'arg0' and argument_list:
+                subj = argument_list[0]
+            elif cvt_label == 'arg1' and argument_list:
+                obj = argument_list[0]
+            else:
+                pobj_list.extend(
+                    [('', argument) for argument in argument_list])
+
+        event = event_script.Event(pred, subj, obj, pobj_list)
+
+        return event
+
+    def get_extra_events(self, fileid, idx_mapping, doc, verbification_dict,
+                         use_nombank=True, use_propbank=True):
+        extra_events = []
+
+        if use_nombank:
+            for instance in self.nombank_reader.search_by_fileid(fileid):
+                sentnum = instance.sentnum
+                sent = doc.get_sent(sentnum)
+
+                try:
+                    pred_token_idx = \
+                        idx_mapping[sentnum].index(instance.wordnum)
+                except ValueError:
+                    continue
+
+                nom_pred_token = sent.get_token(pred_token_idx)
+                if nom_pred_token.lemma not in verbification_dict:
+                    continue
+                pred_lemma = verbification_dict[nom_pred_token.lemma]
+                pred = event_script.Predicate(
+                    word=pred_lemma,
+                    lemma=pred_lemma,
+                    pos='VB',
+                    sentnum=sentnum,
+                    wordnum=pred_token_idx)
+
+                event = self.build_extra_event(
+                    instance, pred, sent)
+                extra_events.append(event)
+
+        if use_propbank:
+            for instance in self.propbank_reader.search_by_fileid(fileid):
+                sentnum = instance.sentnum
+                sent = doc.get_sent(sentnum)
+
+                try:
+                    pred_token_idx = \
+                        idx_mapping[sentnum].index(instance.wordnum)
+                except ValueError:
+                    continue
+
+                pred_token = sent.get_token(pred_token_idx)
+
+                pred = event_script.Predicate(
+                    pred_token.word,
+                    pred_token.lemma,
+                    'VB',
+                    sentnum=sentnum,
+                    wordnum=pred_token_idx)
+
+                event = self.build_extra_event(
+                    instance, pred, sent)
+                extra_events.append(event)
+
+        return extra_events
+
+    def add_extra_events(self, verbification_dict, use_nombank=True,
+                         use_propbank=True):
+        if use_nombank:
+            log.info('Adding extra events from NomBank to CoreNLP scripts')
+        if use_propbank:
+            log.info('Adding extra events from PropBank to CoreNLP scripts')
+
+        prep_vocab_list = read_vocab_list(
+            join(cfg.vocab_path, cfg.prep_vocab_list_file))
+
+        for fileid in self.corenlp_reader.corenlp_dict.keys():
+            log.info('Process file {}'.format(fileid))
+
+            idx_mapping = self.corenlp_reader.get_idx_mapping(fileid)
+            doc = self.corenlp_reader.get_doc(fileid)
+
+            extra_events = self.get_extra_events(
+                fileid, idx_mapping, doc, verbification_dict,
+                use_nombank=use_nombank, use_propbank=use_propbank)
+
+            script = self.corenlp_reader.get_script(fileid)
+            for extra_event in extra_events:
+                script.add_extra_event(extra_event)
+
+            rich_script = RichScript.build(
+                script,
+                prep_vocab_list=prep_vocab_list,
+                use_lemma=True,
+                filter_stop_events=False
+            )
+
+            self.corenlp_reader.corenlp_dict[fileid] = (
+                idx_mapping, doc, deepcopy(script), deepcopy(rich_script))
+
     def build_rich_predicates(
-            self, use_corenlp_token=True, labeled_arg_only=False):
+            self, use_corenlp_token=True, labeled_arg_only=False,
+            avail_candidates_dict=None):
         assert len(self.all_predicates) > 0
         if len(self.all_rich_predicates) > 0:
             log.warning('Overriding existing rich predicates')
@@ -247,13 +393,19 @@ class ImpArgDataset(object):
         log.info('Building rich predicates with {}'.format(
             'CoreNLP tokens' if use_corenlp_token else 'PTB tokens'))
         for predicate in self.all_predicates:
+            avail_candidates = None
+            if avail_candidates_dict is not None:
+                avail_candidates = \
+                    avail_candidates_dict[str(predicate.pred_pointer)]
+
             rich_predicate = RichPredicate.build(
                 predicate,
                 corenlp_reader=self.corenlp_reader,
                 use_lemma=True,
                 use_entity=True,
                 use_corenlp_tokens=use_corenlp_token,
-                labeled_arg_only=labeled_arg_only)
+                labeled_arg_only=labeled_arg_only,
+                avail_candidates=avail_candidates)
             self.all_rich_predicates.append(rich_predicate)
         log.info('Done')
 
@@ -309,12 +461,12 @@ class ImpArgDataset(object):
 
         exclude_pred_idx_list = []
 
-        pbar = tqdm(total=len(self.all_rich_predicates), desc='Processed',
-                    ncols=100)
+        # pbar = tqdm(total=len(self.all_rich_predicates), desc='Processed',
+        #             ncols=100)
 
         for fold_idx in range(self.n_splits):
             for pred_idx in self.train_test_folds[fold_idx][1]:
-                pbar.update(1)
+                # pbar.update(1)
                 rich_predicate = self.all_rich_predicates[pred_idx]
                 if len(rich_predicate.imp_args) == 0:
                     continue
@@ -465,7 +617,7 @@ class ImpArgDataset(object):
                     rich_predicate.imp_args[row_idx].set_coherence_score_list(
                         coherence_score_matrix[row_idx, :])
                 '''
-        pbar.close()
+        # pbar.close()
 
         log.info('Predicates with no context events:')
         for pred_idx in exclude_pred_idx_list:

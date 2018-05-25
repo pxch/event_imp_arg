@@ -283,6 +283,15 @@ class RichTreePointer(object):
     def has_corenlp_info(self):
         return len(self.corenlp_info_list) > 0
 
+    def head_idx(self):
+        assert self.has_corenlp_info()
+        return self.corenlp_info_list[self.head_piece].head_idx
+
+    def idx_list(self):
+        assert self.has_corenlp_info()
+        return [idx for corenlp_info in self.corenlp_info_list
+                for idx in corenlp_info.idx_list]
+
     @property
     def corenlp_word_surface(self):
         if not self._corenlp_word_surface:

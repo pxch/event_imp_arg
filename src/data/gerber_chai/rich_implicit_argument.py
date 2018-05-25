@@ -107,19 +107,20 @@ class RichImplicitArgument(object):
 
     def set_coherence_score_list(self, coherence_score_list):
         assert len(coherence_score_list) == len(self.rich_candidate_list) + 1
-        self.has_coherence_score = True
         self.coherence_score_wo_arg = coherence_score_list[0]
         self.coherence_score_list = coherence_score_list[1:]
-        self.max_coherence_score = self.coherence_score_list.max()
+        if len(self.coherence_score_list) > 0:
+            self.has_coherence_score = True
+            self.max_coherence_score = self.coherence_score_list.max()
 
-        max_indices = \
-            [idx for idx, score in enumerate(self.coherence_score_list)
-             if score == self.max_coherence_score]
+            max_indices = \
+                [idx for idx, score in enumerate(self.coherence_score_list)
+                 if score == self.max_coherence_score]
 
-        max_dice_list = np.asarray(
-            [self.rich_candidate_list[idx].dice_score
-             for idx in max_indices])
-        self.max_coherence_score_idx = max_indices[max_dice_list.argmax()]
+            max_dice_list = np.asarray(
+                [self.rich_candidate_list[idx].dice_score
+                 for idx in max_indices])
+            self.max_coherence_score_idx = max_indices[max_dice_list.argmax()]
 
     def reset_coherence_score_list(self):
         self.coherence_score_list = []
